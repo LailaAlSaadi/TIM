@@ -1,3 +1,32 @@
 <resources>
-    <string name="app_name">TimeTableApp</string>
+    <string name="app_name">معا نصل</string>
+    <string name="city_label">المدينة</string>
+    <string name="route_label">الخط</string>
+
+    <string-array name="country_arrays">
+        <item>عمان</item>
+        <item>إربد</item>
+        <item>الزرقاء</item>
+        <item>المفرق</item>
+        <item>معان</item>
+        <item>مادبا</item>
+        <item>كرك</item>
+        <item>البلقاء</item>
+        <item>جرش</item>
+        <item>الطفيلة</item>
+        <item>عجلون</item>
+        <item>العقبة</item>
+    </string-array>
+
+
+    <string-array name="routes_0">
+        <item>رغدان - صويلح - كوستر</item>
+        <item>صويلح - رغدان - كوستر</item>
+    </string-array>
+
+    <string-array name="routes_1">
+        <item>اربد - الزرقاء - سيرفيس</item>
+        <item>مجمع عمان الجديد - الحصن - باص</item>
+    </string-array>
+
 </resources>
