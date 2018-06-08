@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private long timeSwap;
 
     @Click
-    public void startTimer() {30
+    public void startTimer() {
         stopTimerBtn.setEnabled(true);
         startTimerBtn.setEnabled(false);
         citySpinner.setEnabled(false);
