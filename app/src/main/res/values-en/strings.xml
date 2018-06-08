@@ -2,8 +2,8 @@
     <string name="app_name">Maan Nasel</string>
     <string name="city_label">city</string>
     <string name="route_label">route</string>
-    <string name="onBus">I am <u>On</u> this transportation vehicle</string>
-    <string name="offBus">I am <u>Off</u> the transportation vehicle</string>
+    <string name="onBus">Start</string>
+    <string name="offBus">End</string>
 
     <string-array name="country_arrays">
         <item>Amman</item>

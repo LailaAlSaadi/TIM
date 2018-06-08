@@ -2,8 +2,8 @@
     <string name="app_name">معا نصل</string>
     <string name="city_label">المدينة</string>
     <string name="route_label">الخط</string>
-    <string name="onBus"> انا <u>على متن</u> هذه المواصلة</string>
-    <string name="offBus">انا <u>لم أعد على متن</u> هذه المواصلة</string>
+    <string name="onBus">إبدأ</string>
+    <string name="offBus">إنهي</string>
 
     <string-array name="country_arrays">
         <item>عمان</item>
