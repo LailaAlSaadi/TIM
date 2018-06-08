@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Maan Nasel</string>
+    <string name="city_label">city</string>
+    <string name="route_label">route</string>
+    <string name="onBus">I am <u>On</u> this transportation vehicle</string>
+    <string name="offBus">I am <u>Off</u> the transportation vehicle</string>
+
+    <string-array name="country_arrays">
+        <item>Amman</item>
+        <item>Irbid</item>
+        <!--<item>AlZarqa</item>-->
+        <!--<item>Almafeq</item>-->
+        <!--<item>Mea'n</item>-->
+        <!--<item>Madaba</item>-->
+        <!--<item>Karak</item>-->
+        <!--<item>AlBalqa</item>-->
+        <!--<item>Jarash</item>-->
+        <!--<item>AlTafeeleh</item>-->
+        <!--<item>Ajloun</item>-->
+        <!--<item>AlAqapa</item>-->
+    </string-array>
+
+
+    <string-array name="routes_0">
+        <item>Raghadan -> Swileh [Coaster]</item>
+        <item>Swileh -> Raghadan [Coaster]</item>
+    </string-array>
+
+    <string-array name="routes_1">
+        <item>Irbid -> AlZarqa - [Serfis]</item>
+        <item>Amman Eljded -> Alhoson - [Coaster]</item>
+    </string-array>
+
+</resources>
