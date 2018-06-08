@@ -13,6 +13,11 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/tim"/>
     <Spinner
         android:entries="@array/country_arrays"
         android:tooltipText="@string/city_label"
