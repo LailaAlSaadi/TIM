@@ -1,8 +1,17 @@
 package com.u689.timetableapp;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.u689.timetableapp.itemdao.ItemDao;
+import com.u689.timetableapp.itemdao.UserEntry;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -19,13 +29,13 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import static android.R.layout.simple_spinner_item;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
-//    Typeface font;
-
 
     ItemDao itemDao = new ItemDao();
 
@@ -45,7 +55,11 @@ public class MainActivity extends AppCompatActivity {
     TextView stopTimerBtn;
 
     ArrayAdapter<CharSequence> adapter;
-    private Handler myHandler = new Handler();
+    private Handler timerHandler = new Handler();
+    final Handler trackingHandler = new Handler();
+    private long finalTime;
+    private long startTime;
+    String tripId;
 
     @AfterViews
     public void defaultBehavior() {
@@ -71,22 +85,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private long startTime;
-    private long timeInMillies;
-    private long finalTime;
-
-
-    final Handler timerHandler = new Handler();
-
     @Click
     public void startTimer() {
+        tripId = getTripId();
         stopTimerBtn.setEnabled(true);
         startTimerBtn.setEnabled(false);
         citySpinner.setEnabled(false);
         routeSpinner.setEnabled(false);
         startTime = SystemClock.uptimeMillis();
-        myHandler.postDelayed(updateTimerMethod, 0);
-        timerHandler.postDelayed(timerRepeat, 5000);
+        timerHandler.postDelayed(updateTimerMethod, 0);
+        trackingHandler.postDelayed(timerRepeat, 5000);
     }
 
     @Click
@@ -96,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         stopTimerBtn.setEnabled(false);
         startTimerBtn.setEnabled(true);
         finalTime = 0;
-        myHandler.removeCallbacks(updateTimerMethod);
-        timerHandler.removeCallbacks(timerRepeat);
+        timerHandler.removeCallbacks(updateTimerMethod);
+        trackingHandler.removeCallbacks(timerRepeat);
     }
 
     private Runnable updateTimerMethod = new Runnable() {
@@ -108,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             int hours = minutes / 60;
             seconds = seconds % 60;
             textTimer.setText(getFormatedTime(seconds, minutes, hours));
-            myHandler.postDelayed(this, 0);
+            timerHandler.postDelayed(this, 0);
         }
 
     };
@@ -123,10 +131,76 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             Log.i("timer loop", "*****" + new Date() + "******");
-            itemDao.addEntry(routeSpinner.getSelectedItem().toString(), 31.0, 31.021);
-            timerHandler.postDelayed(this, 5000);
+            Location location = updateCurrentLocation();
+
+            if (location != null) {
+                UserEntry entry = new UserEntry(
+                        tripId,
+                        routeSpinner.getSelectedItem().toString(),
+                        location.getLatitude(),
+                        location.getLongitude()
+                );
+
+                itemDao.addEntry(entry);
+            }
+            trackingHandler.postDelayed(this, 5000);
         }
     };
+
+    public String getTripId() {
+        return UUID.randomUUID().toString();
+    }
+
+    LocationManager lm;
+
+    public Location getLastKnownLocation(){
+        List<String> providers = lm.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            @SuppressLint("MissingPermission") Location l = lm.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
+    }
+
+
+    @AfterViews
+    public void preLoc() {
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    public Location updateCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);// TODO: Consider calling
+            return null;
+        }
+        return getLastKnownLocation();
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    updateCurrentLocation();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+
+    }
 }
 
 
